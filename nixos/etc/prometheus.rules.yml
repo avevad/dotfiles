@@ -1,0 +1,31 @@
+groups:
+  - name: node
+    rules:
+      - alert: CPU_Overloaded
+        expr: 'floor(100 * (sum by () (rate(node_cpu_seconds_total{mode!="idle"}[30s])))) > 80'
+        annotations:
+          summary: "CPU is overloaded"
+          description: "CPU usage is too high ({{ $value }}%)"
+  - name: metrics1
+    rules:
+      - alert: Pushy1_Down
+        expr: 'up{job="pushy1"} != 1'
+        annotations:
+          summary: "Pushy1 is down"
+          description: "Prometheus healthcheck detected Pushy1 downtime"
+        labels:
+          team: pushy
+      - alert: Prometheus1_Down
+        expr: 'up{job="prometheus1"} != 1'
+        annotations:
+          summary: "Prometheus1 is down"
+          description: "Prometheus healthcheck detected Prometheus1 downtime"
+        labels:
+          team: pushy
+      - alert: Alertmanager1_Down
+        expr: 'up{job="alertmanager1"} != 1'
+        annotations:
+          summary: "Alertmanager1 is down"
+          description: "Prometheus healthcheck detected Alertmanager1 downtime"
+        labels:
+          team: pushy
