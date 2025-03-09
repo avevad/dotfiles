@@ -19,6 +19,7 @@
           ip route add 10.100.0.0/24 dev wg0 table 228
           ip rule add iif wg0 table 228
           ip rule add iif wg0 to 172.17.0.1/16 table main
+          ip rule add iif wg0 to 10.88.0.1/16 table main
 
           ip route add default via 10.200.0.1 table 229
           ip route add 10.101.0.0/24 dev wg01 table 229
@@ -27,6 +28,7 @@
         postShutdown = ''
           ip rule delete iif wg0
           ip rule delete iif wg0 to 172.17.0.1/16
+          ip rule delete iif wg0 to 10.88.0.1/16
           ip route flush table 228
 
           ip rule delete iif wg01

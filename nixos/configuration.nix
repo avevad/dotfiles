@@ -77,6 +77,7 @@ in
       address = [
         "/nitrogen.avevad.com/10.100.0.1"
         "/helium.avevad.com/10.200.0.1"
+        "/oxygen.avevad.com/10.100.0.5"
       ];
       log-queries = true;
     };
