@@ -127,7 +127,7 @@ in
       environment = {
         TZ="Europe/Moscow";
       };
-      extraOptions = [ "--user=root" "--dns=10.88.53.53" "--dns=10.100.0.1" ];
+      extraOptions = [ "--user=root" "--dns=10.100.0.1" "--network=pushy"];
     };
   };
 }
