@@ -16,7 +16,7 @@ in
     pushy-postgres = {
       image = "postgres:16";
       ports = [ "127.0.0.1:5432:5432" ];
-      volumes = [ "/mnt/storage/pushy/postgres:/var/lib/postgresql/data/pgdata" ];
+      volumes = [ "/mnt/state/pushy/postgres:/var/lib/postgresql/data/pgdata" ];
       cmd = [ "-c" "log_checkpoints=false" ];
       environment = {
         POSTGRES_PASSWORD = "password";
@@ -59,7 +59,7 @@ in
     passmgr-vaultwarden = {
       image = "vaultwarden/server:1.33.0";
       ports = [ "127.0.0.1:8808:80" ];
-      volumes = [ "/mnt/storage/vaultwarden:/data" ];
+      volumes = [ "/mnt/state/vaultwarden:/data" ];
       environment = {
         TZ = "Europe/Moscow";
         LOG_LEVEL = "error";
@@ -80,7 +80,7 @@ in
       volumes = [
         "${./etc/prometheus.yml}:/etc/prometheus/prometheus.yml:ro"
         "${./etc/prometheus.rules.yml}:/etc/prometheus/rules.yml:ro"
-        "/mnt/storage/prometheus:/prometheus"
+        "/mnt/state/prometheus:/prometheus"
       ];
       environment = {
         TZ="Europe/Moscow";
@@ -110,7 +110,7 @@ in
       ];
       volumes = [
         "${alertmanagerYml}:/etc/alertmanager/alertmanager.yml:ro"
-        "/mnt/storage/alertmanager:/alertmanager"
+        "/mnt/state/alertmanager:/alertmanager"
       ];
       environment = {
         TZ="Europe/Moscow";
@@ -122,7 +122,7 @@ in
       image = "grafana/grafana";
       ports = [ "127.0.0.1:3000:3000" ];
       volumes = [
-        "/mnt/storage/grafana:/var/lib/grafana"
+        "/mnt/state/grafana:/var/lib/grafana"
       ];
       environment = {
         TZ="Europe/Moscow";

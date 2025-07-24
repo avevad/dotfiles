@@ -70,6 +70,7 @@ in
     );
 
     dnsmasq.enable = true;
+    dnsmasq.resolveLocalQueries = false;
     dnsmasq.settings = {
       server = [ "1.1.1.1" "1.0.0.1" ];
       no-resolv = true;
