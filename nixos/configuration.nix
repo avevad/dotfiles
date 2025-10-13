@@ -5,7 +5,7 @@ let
 in
 
 {
-  system.stateVersion = "23.11";
+  system.stateVersion = "25.05";
 
   imports = [
     /etc/nixos/hardware-configuration.nix
@@ -59,11 +59,13 @@ in
       [
         "@CERT_FILE@"
         "@CERT_FILE_PUSHY@"
+        "@CERT_FILE_TONSBP@"
         "@DEPLOY_TOKEN@"
       ]
       [
         "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT }"
         "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT_PUSHY }"
+        "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT_TONSBP }"
         ENV.TOKENS.HAPROXY_DEPLOY
       ] 
       (builtins.readFile ./etc/haproxy.cfg)
