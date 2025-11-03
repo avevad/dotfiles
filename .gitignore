@@ -1,4 +1,0 @@
-nixos/secrets/*.pem
-nixos/secrets/*.nix
-nixos/deployment/*.txt
-nixos/wireguard/*.nix
