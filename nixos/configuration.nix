@@ -48,7 +48,7 @@ in
 
   services = {
     openssh.enable = true;
-    openssh.listenAddresses = [ { addr = "10.100.0.1"; port = 22; } ];
+    openssh.listenAddresses = [ { addr = "10.100.100.10"; port = 22; } ];
     openssh.settings = {
       PasswordAuthentication = false;
       PermitRootLogin = "no";
@@ -60,12 +60,14 @@ in
         "@CERT_FILE@"
         "@CERT_FILE_PUSHY@"
         "@CERT_FILE_TONSBP@"
+        "@CERT_FILE_PRO@"
         "@DEPLOY_TOKEN@"
       ]
       [
         "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT }"
         "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT_PUSHY }"
         "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT_TONSBP }"
+        "${ pkgs.writeText "haproxy.pem" ENV.HAPROXY_CERT_PRO }"
         ENV.TOKENS.HAPROXY_DEPLOY
       ] 
       (builtins.readFile ./etc/haproxy.cfg)
@@ -77,12 +79,17 @@ in
       server = [ "1.1.1.1" "1.0.0.1" ];
       no-resolv = true;
       no-hosts = true;
-      address = [
-        "/nitrogen.avevad.com/10.100.0.1"
-        "/helium.avevad.com/10.200.0.1"
-        "/oxygen.avevad.com/10.100.0.5"
-      ];
       log-queries = true;
+      address = [
+        # Servers
+        "/nitrogen.avedus.pro/10.100.100.10"
+        "/helium.avedus.pro/10.100.100.20"
+        "/carbon.avedus.pro/10.10.10.10" # Also 10.100.100.30, but this address is preferred
+        
+        # Important clients
+        "/keenetic.avedus.pro/10.10.10.1"
+        "/netlink.avedus.pro/10.10.0.1"
+      ];
     };
   };
 }

@@ -2,64 +2,64 @@
 
 {
   networking = {
-    nat = {
-      enable = true;
-      externalInterface = "ens3";
-      internalInterfaces = [ "wg0" "wg01" ];
-    };
-
     wireguard.interfaces = {
-      wg1 = { # HELIUM BRIDGE
-        ips = [ "10.200.0.2/24" ];
-        listenPort = 51488;
-        allowedIPsAsRoutes = false;
-
-        postSetup = ''
-          ip route add default via 10.200.0.1 table 228
-          ip route add 10.100.0.0/24 dev wg0 table 228
-          ip rule add iif wg0 table 228
-          ip rule add iif wg0 to 172.17.0.1/16 table main
-          ip rule add iif wg0 to 10.88.0.1/16 table main
-
-          ip route add default via 10.200.0.1 table 229
-          ip route add 10.101.0.0/24 dev wg01 table 229
-          ip rule add iif wg01 table 229
-        '';
-        postShutdown = ''
-          ip rule delete iif wg0
-          ip rule delete iif wg0 to 172.17.0.1/16
-          ip rule delete iif wg0 to 10.88.0.1/16
-          ip route flush table 228
-
-          ip rule delete iif wg01
-          ip route flush table 229
-        '';
-
-        privateKeyFile = "/root/wg_nitrogen_priv.txt";
+      # hub.avevad.com
+      hub_wg0 = { 
+        ips = [ "10.100.100.1/32" ];
+        listenPort = 51339;
+        privateKeyFile = "/root/wg_f_nitrogen_priv.txt";
         peers = [
+          # { # NITROGEN
+          #   publicKey = "09mS1qaYV+Q9ct/wpqZje8nwlZs1tHBXMBTm0hxIOms=";
+          #   allowedIPs = [ "10.100.100.10/32" "10.100.0.0/24" ];
+          # }
           { # HELIUM
             publicKey = "frYUUl/wWzMUeiIzjjzZeAkWCg7tie4KwtCK3yqCum8=";
-            allowedIPs = [ "0.0.0.0/0" ];
-            endpoint = "helium.avevad.com:51488";
-            persistentKeepalive = 25;
-         }
+            allowedIPs = [ "10.100.100.20/32" ];
+          }
+          { # CARBON
+            publicKey = "W3iaqQovfM23eAYqTWraxI7rRYDppqKrdeT+d4IN3zI=";
+            allowedIPs = [ "10.100.100.30/32" "10.10.0.0/16" ];
+          }
         ];
       };
 
-      wg01 = { # PUBLIC VPN
-        ips = [ "10.101.0.1/24" ];
-        listenPort = 51338;
-
-        privateKeyFile = "/root/wg_f_nitrogen_priv.txt";
-        peers = import ./wireguard/wg01.nix;
-      };
-
-      wg0 = { # INTERNAL VPN
-        ips = [ "10.100.0.1/24" ];
+      # gateway.avevad.com
+      gateway_wg0 = {
+        ips = [ "10.100.100.10/32" "10.100.0.1/24" ];
         listenPort = 51337;
-
         privateKeyFile = "/root/wg_nitrogen_priv.txt";
-        peers = import ./wireguard/wg0.nix;
+        peers = [
+          # {
+          #   publicKey = "jD9IEOpc2ZcoOTZ2bUHexmns1/OBKPl6PeApovWcJSs=";
+          #   allowedIPs = [ "10.0.0.0/8" ];
+          #   endpoint = "hub.avevad.com:51339";
+          # }
+        ] ++ ( import ./wireguard/wg0.nix );
+        postSetup = ''
+          ip route add default dev gateway_wg1 table 42
+          ip route add 10.100.0.0/24 dev gateway_wg0 table 42
+          ip route add 10.0.0.0/8 dev hub_wg0 table 42
+          ip rule add iif gateway_wg0 table 42
+        '';
+        preShutdown = ''
+          ip rule delete iif gateway_wg0
+          ip route flush table 42
+        '';
+      };
+      gateway_wg1 = { # Egress transit
+        ips = [ "10.100.254.1/32" ];
+        listenPort = 51340;
+        privateKeyFile = "/root/wg_f_nitrogen_priv.txt";
+        allowedIPsAsRoutes = false;
+        peers = [
+          {
+            publicKey = "frYUUl/wWzMUeiIzjjzZeAkWCg7tie4KwtCK3yqCum8=";
+            allowedIPs = [ "0.0.0.0/0" ];
+            endpoint = "egress.avevad.com:51340";
+            persistentKeepalive = 25;
+          }
+        ];
       };
     };
   };

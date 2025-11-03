@@ -22,7 +22,7 @@ in
         POSTGRES_PASSWORD = "password";
         PGDATA = "/var/lib/postgresql/data/pgdata";
       };
-      extraOptions = [ "--network=pushy" "--ip=10.88.0.101" ];
+      extraOptions = [ "--network=pushy" "--ip=192.168.1.101" ];
     };
 
     tonsbp-postgres = {
@@ -33,7 +33,7 @@ in
         POSTGRES_PASSWORD = "password";
         PGDATA = "/var/lib/postgresql/data/pgdata";
       };
-      extraOptions = [ "--network=tonsbp" "--ip=10.89.0.101" ];
+      extraOptions = [ "--network=tonsbp" "--ip=192.168.2.101" ];
     };
 
     pushy-tgbot = {
@@ -44,7 +44,7 @@ in
       extraOptions = [ "--dns=10.100.0.1" "--network=pushy" ];
       environment = pkgs.lib.recursiveUpdate {
         PUSHY_TG_TOKEN=ENV.TOKENS.PUSHY_TG;
-        PUSHY_DB_URL="postgresql+psycopg2://postgres:password@10.88.0.101/pushy";
+        PUSHY_DB_URL="postgresql+psycopg2://postgres:password@192.168.1.101/pushy";
         PUSHY_VERSION_SUFFIX="";
         PUSHY_VOXAPI_CREDS_FILE="/voxapi-credentials.json";
         PUSHY_VOXAPI_RULE_ID="8018889";
@@ -59,7 +59,7 @@ in
       extraOptions = [ "--dns=10.100.0.1" "--network=pushy" ];
       environment = pkgs.lib.recursiveUpdate {
         PUSHY_VERSION_SUFFIX="-${ builtins.substring 108 7 ENV.DEPLOY.PUSHY_TEST_REV }";
-        PUSHY_DB_URL="postgresql+psycopg2://postgres:password@10.88.0.101/pushy_test";
+        PUSHY_DB_URL="postgresql+psycopg2://postgres:password@192.168.1.101/pushy_test";
         PUSHY_TG_TOKEN=ENV.TOKENS.PUSHY_TEST_TG;
       } ENV.TOKENS.PUSHY_TEST_ENV_ETC;
     };
@@ -84,7 +84,7 @@ in
         TONSBP_WALLET_ID=ENV.TOKENS.TONSBP_WALLET_ID;
         TONSBP_TONAPI_KEY=ENV.TOKENS.TONSBP_TONAPI_KEY;
         TONSBP_TONCENTER_KEY=ENV.TOKENS.TONSBP_TONCENTER_KEY;
-        TONSBP_DB_URL="postgresql+psycopg2://postgres:password@10.89.0.101/tonsbp";
+        TONSBP_DB_URL="postgresql+psycopg2://postgres:password@192.168.2.101/tonsbp";
         TONSBP_CENTRAL_WEBHOOK_URL="https://tonsbp-central-api.helium.avevad.com/v1/payment?admin_key=${ ENV.TOKENS.TONSBP_PUSHY_WEBHOOK_ADMIN_KEY }";
       };
     };
@@ -130,11 +130,9 @@ in
     metrics-alertmanager = let
       alertmanagerYml = pkgs.writeText "alertmanager.yml" (builtins.replaceStrings
         [
-          "@PUSHY_WEBHOOK_URL@"
           "@PUSHY_DEV_TEAM_WEBHOOK_URL@"
         ]
         [
-          ENV.TOKENS.PUSHY_ALERTS_URL
           ENV.TOKENS.PUSHY_DEV_TEAM_ALERTS_URL
         ]
         (builtins.readFile ./etc/alertmanager.yml)
@@ -166,7 +164,7 @@ in
       environment = {
         TZ="Europe/Moscow";
       };
-      extraOptions = [ "--user=root" "--dns=10.100.0.1" "--network=pushy"];
+      extraOptions = [ "--user=root" "--dns=10.100.0.1" ];
     };
   };
 }

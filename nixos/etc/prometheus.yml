@@ -9,44 +9,44 @@ alerting:
   alertmanagers:
   - scheme: https
     static_configs:
-      - targets: ['alerts.nitrogen.avevad.com:443']
+      - targets: ['alerts.nitrogen.avedus.pro:443']
 
 scrape_configs:
   - job_name: prometheus
     scheme: https
     static_configs:
-      - targets: ['prom.nitrogen.avevad.com:443']
+      - targets: ['prom.nitrogen.avedus.pro:443']
   - job_name: alertmanager
     scheme: https
     static_configs:
-      - targets: ['alerts.nitrogen.avevad.com:443']
+      - targets: ['alerts.nitrogen.avedus.pro:443']
   - job_name: pushy
-    metrics_path: '/api/metrics'
     scheme: https
     static_configs:
-      - targets: ['pushy.nitrogen.avevad.com:443']
+      - targets: ['api.pushy.tg:443']
   - job_name: pushy1
     metrics_path: '/api/metrics'
     scheme: https
     static_configs:
-      - targets: ['pushy1.helium.avevad.com:443']
+      - targets: ['pushy1.helium.avedus.pro:443']
   - job_name: pushy-test
     metrics_path: '/api/metrics'
     scheme: https
     static_configs:
-      - targets: ['pushy-test.nitrogen.avevad.com:443']
+      - targets: ['pushy-test.nitrogen.avedus.pro:443']
   - job_name: pushy-ext
+    scheme: https
     static_configs:
-      - targets: ['10.100.0.12:8083']
+      - targets: ['dd1.nitrogen.avedus.pro']
   - job_name: prometheus1
     scheme: https
     static_configs:
-      - targets: ['prom1.helium.avevad.com:443']
+      - targets: ['prom1.helium.avedus.pro:443']
   - job_name: alertmanager1
     scheme: https
     static_configs:
-      - targets: ['alerts1.helium.avevad.com:443']
+      - targets: ['alerts1.helium.avedus.pro:443']
   - job_name: deadlines
     scheme: https
     static_configs:
-      - targets: ['ddl.nitrogen.avevad.com:443']
+      - targets: ['ddl.nitrogen.avedus.pro:443']
